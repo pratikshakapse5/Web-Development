@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\app1",
+    "\\budget",
+    "\\core",
+    "\\journal",
+    "\\project1",
+    "\\tasks",
+    "\\templates",
+    "\\templates\\app1",
+    "\\templates\\budget"
+  ],
+  "SelectedNode": "\\templates\\tasks\\add_task.html",
+  "PreviewInSolutionExplorer": false
+}

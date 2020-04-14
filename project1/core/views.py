@@ -1,12 +1,44 @@
 from django.shortcuts import render, redirect
 from core.forms import JoinForm, LoginForm
-from django.contrib.auth import authenticate, login, logout
+
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
+from tasks.models import Task
+from budget.models import Budget
+from journal.models import Journal
+from datetime import datetime
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+from core.models import UserProfileCore
+
+def about(request):
+	return render(request, 'core/about.html')
 
 def home(request):
-	return HttpResponse("Hello World!")
+	if not request.user.is_authenticated:
+		return render(request, 'core/login.html')
+	else:
+		task_list=Task.objects.select_related().filter(user=request.user)
+		c_task=0
+		p_task=0
+		for line in task_list:
+			if (line.completed=='No'):
+				p_task=p_task+1
+			else:
+				c_task=c_task+1
+		budget_list=Budget.objects.select_related().filter(user=request.user)
+		journal_list=Journal.objects.select_related().filter(user=request.user)
+		latest_date=Journal.objects.latest('date')
+		today=datetime.now().date()
+		diff=(today-latest_date.date)
+		print(p_task)
+		try:
+			
+			return render(request,'core/home.html',{'task_list':task_list,'completed':c_task,'pending':p_task, 'budget_list':budget_list,'journal_list':journal_list,'days':diff.days})
+		#journal_list=Journal.objects.all
+		except:
+		
+			return render(request,'core/home.html',{'task_list':task_list,'completed':c_task,'pending':p_task, 'budget_list':budget_list,'journal_list':journal_list,'days':diff.days})
 
 def join(request):
     if (request.method == "POST"):
@@ -28,35 +60,32 @@ def join(request):
         page_data = { "join_form": join_form }
         return render(request, 'core/join.html', page_data)
 
-def home(request):
+def user_login(request):
     if (request.method == 'POST'):
         login_form = LoginForm(request.POST)
-        if login_form.is_valid():
-            # First get the username and password supplied
-            username = login_form.cleaned_data["username"]
-            password = login_form.cleaned_data["password"]
-            # Django's built-in authentication function:
-            user = authenticate(username=username, password=password)
-            # If we have a user
-            if user:
-                #Check it the account is active
-                if user.is_active:
-                    # Log the user in.
-                    login(request,user)
-                    # Send the user back to homepage
-                    return redirect("/")
-                else:
-                    # If account is not active:
-                    return HttpResponse("Your account is not active.")
+        print(request.POST)
+        # First get the username and password supplied
+        username = request.POST["username"]
+        password = request.POST["password"]
+        # Django's built-in authentication function:
+        user = authenticate(username=username, password=password)
+		# If we have a user
+        if user:
+            #Check it the account is active
+            if user.is_active:
+                # Log the user in.
+                login(request,user)
+                # Send the user back to homepage
+                return redirect("/home")
             else:
-                print("Someone tried to login and failed.")
-                print("They used username: {} and password: {}".format(username,password))
-                return render(request, 'app2/login.html', {"login_form": LoginForm})
+                # If account is not active:
+                return HttpResponse("Your account is not active.")
+	
     else:
         #Nothing has been provided for username or password.
-        return render(request, 'core/login.html', {"login_form": LoginForm})
+        return render(request, 'core/login.html', {})
 
-@login_required(login_url='/login/')
+@login_required
 def user_logout(request):
     # Log out the user.
     logout(request)

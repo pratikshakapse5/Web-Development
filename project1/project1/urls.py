@@ -23,15 +23,25 @@ from budget import views as budget_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-	#path('', core_views.home, name='home'),
-	#path('', app1_views.home, name='home'),
-	#path('',core_views.home,name='home'),
+	path('about/', core_views.about, name='about'),
+	path('home/',core_views.home, name='home'),
+	path('',core_views.home,name='home'),
 	path('journal/',journal_views.journal,name='journal'),
 	path('budget/',budget_views.budget,name='budget'),
 	path('tasks/',tasks_views.tasks,name='tasks'),
-	#path('view_task_list/',tasks_views.view_task_list,name='view_task_list'),
+	path('project1/templates/core/pratiksha.jpg',core_views.about,name='about'),
 	path('add_task/',tasks_views.add_task,name='add_task'),
+	path('edit_task',tasks_views.edit_task,name='edit_task'),
+	path('edit_budget/',budget_views.edit_budget,name='edit_budget'),
+	path('delete_tasks',tasks_views.delete_tasks,name='delete_tasks'),
+	path('add_budget/',budget_views.add_budget,name='add_budget'),
+	path('delete_budget/',budget_views.delete_budget,name='delete_budget'),
+	
+	path('add_journal/',journal_views.add_journal,name='add_journal'),
+	path('edit_journal',journal_views.edit_journal,name='edit_journal'),
+	path('delete_journal',journal_views.delete_journal,name='delete_journal'),
+	#path('view_budget_list/',budget_views.view_budget_list,name='view_budget_list'),
     path('logout/', core_views.user_logout, name='user_logout'),
-	#path('login/',core_views.user_login,name='user_login'),
+	path('login/',core_views.user_login,name='user_login'),
 	path('join/',core_views.join,name='join')
 ]

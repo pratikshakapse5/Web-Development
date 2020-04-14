@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Add Tasks</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+  <!--bootstrap includes-->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+  {% load staticfiles %}
+  <link rel="stylesheet" href="{%static 'CSS/project1.css' %}" />
+  <script src="{%static 'JS/project1.js' %}"></script>
+
+</head>
+<body>
+  {% include "app1/navbar.html" %}
+  
+  <div class="container">
+    <div class = "jumbotron">
+      <h1>Budget</h1>
+      
+	  <form action="/view_budget_list/" method="POST">
+        {{ login_form.as_p }}
+        {% csrf_token %}
+		
+		<table class="table table-hover table-dark">
+        <tr>
+        <th>Desription</th>
+        
+        <th>Category</th>
+
+		<th>Completed</th>
+    
+		<th>Edit</th>
+
+		<th>Delete</th>
+	</tr>
+    {% for budget in allbudget%}
+    <tr> 
+		
+		<td> {{budget.description}}</td>
+        <td>{{budget.category}}</td>
+		<td>{{budget.completed}}</td>
+		
+	
+		<td>
+		<form action="/edit_budget/{{budget.id}}" method="POST"> 
+        {{ editbudget.as_p }}
+        {% csrf_token %}
+		 <a href="{%url 'edit_budget'%}?e_id={{budget.id}}">
+        <input type="button" action="/edit_budget/"class="btn btn-info"  value = "Edit"/>
+	 </form>
+	 </td>
+	 <td>
+        
+		 
+        <input type="button" class="btn btn-danger" data-toggle="modal" data-target ="#deleteModel{{ budget.id }}" value = "Delete"/>
+	 </td>
+    </tr>
+	{% include 'budget/delete_budget.html' %}
+    {% endfor %}
+	</table>
+	<table>
+		<tr><td>
+		</form>
+		<form action="/add_budget/" method="POST">
+		{% csrf_token %}
+        <input type="submit" class="btn btn-success" value = "Add Budget"/>
+	    </form>
+		</td><td>
+		{% if the_final_value > 0 %}
+		 There is a projected a budget surplus of ${{the_final_value}}
+		{% else %}
+			There is a projected budget deficit of ${{ the_final_value }}
+		{% endif %}
+		</td></tr>
+	</table>
+    </div>
+  </div>
+</body>
+</html>

@@ -3,6 +3,11 @@
 <head>
   <meta charset="utf-8">
   <title>Add Tasks</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
   <!--bootstrap includes-->
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
@@ -23,33 +28,54 @@
       <form action="/view_task_list/" method="POST">
         {{ login_form.as_p }}
         {% csrf_token %}
-
-		<table>
+		
+		<table class="table table-hover table-dark">
+		
         <tr>
-        <th>Category</th>
+        <th>Desription</th>
         
-        <th>description</th>
+        <th>Category</th>
 
 		<th>Completed</th>
-    </tr>
+    
+		<th>Edit</th>
+
+		<th>Delete</th>
+	</tr>
     {% for task in alltasks%}
     <tr> 
-
-	
-	
+		<td> {{task.description}}</td>
         <td>{{task.category}}</td>
-        
-        <td> {{task.description}}</td>
+		<td>
+		<a href="?toggle_completed={{task.id}}">
+			
+          {% ifequal task.completed 'No' %}No{% else %}Yes{% endifequal %}
+		</a></td>
 
-		<td>{{task.completed}}</td>
+
+	<!--	<td>{{task.completed}}</td>
+		--><td>
+		<form action="/edit_task/{{task.id}}" method="POST"> 
+        {{ edittask.as_p }}
+        {% csrf_token %}
+		 <a href="{%url 'edit_task'%}?e_id={{task.id}}">
+        <input type="button" action="/edit_task/"class="btn btn-info"  value = "Edit"/>
+	 </form>
+	 </td>
+	 <td>
+        
+		 
+        <input type="button" class="btn btn-danger" data-toggle="modal" data-target ="#deleteModel{{ task.id }}" value = "Delete"/>
+	 </td>
     </tr>
+	{% include 'tasks/delete_task.html' %}
     {% endfor %}
 	</table>
 
 		</form>
 		<form action="/add_task/" method="POST">
 		{% csrf_token %}
-        <input type="submit" class="btn btn-primary" value = "Add Task"/>
+        <input type="submit" class="btn btn-success" value = "Add Task"/>
 	    </form>
 
     </div>

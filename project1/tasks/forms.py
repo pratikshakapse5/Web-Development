@@ -10,8 +10,23 @@ CATEGORIES= [
     ('other','Other'),
     ]
 
+STATUS= [
+	('Yes','Yes'),
+	('No','No')
+]
+
 class add_task_form(forms.Form):
 	Description= forms.CharField(max_length=100, label='Description')
 	Category= forms.CharField(label='Category', widget=forms.Select(choices=CATEGORIES))
+
+class edit_task_form(forms.Form):
+	Ids=forms.CharField(widget=forms.HiddenInput())
+	Completed=forms.ChoiceField(choices=STATUS)
+	Description=forms.CharField(max_length=100, label='Description')
+	Category=forms.CharField(label='Category', widget=forms.Select(choices=CATEGORIES))
+
+class show_hine(forms.Form):
+	 status=forms.BooleanField()
+	 
 
    
